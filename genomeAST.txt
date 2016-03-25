@@ -1,0 +1,246 @@
+import {}
+{},{}
+sys
+random
+#################################GetTree
+def {}({}):
+getTree
+{},{}
+genome
+{},{}
+codonLength
+{},{}
+position
+{},{}
+container
+translation
+{} = {}
+codon
+{}[{}]
+genome
+{}:{}
+position
+{} + {}
+position
+codonLength
+{} = {}
+aacid
+{}[{}]
+translation
+codon
+{} += {}
+position
+codonLength
+{} = {}
+newContainer
+[]
+if {}:
+{} != {}
+aacid
+"{}"
+{}
+for {} in {}:
+i
+range({})
+{}.count({})
+aacid
+"{}"
+{}
+{} = {}
+{},{}
+value
+position
+{}({})
+getTree
+{},{}
+genome
+{},{}
+codonLength
+{},{}
+position
+{},{}
+newContainer
+translation
+{}.append({})
+newContainer
+value
+dedent
+{} = {}
+aacid
+{}.format(*{})
+aacid
+newContainer
+dedent
+return {}
+{},{}
+aacid
+position
+dedent
+#####################################Translate
+def {}({}):
+translate
+{},{}
+genome
+{},{}
+codonLength
+translation
+{} = {}
+output
+''
+{} = {}
+codeList
+[]
+{} = {}
+position
+0
+while {}:
+{} < {}
+position
+len({})
+genome
+{} = {}
+{},{}
+value
+position
+{}({})
+getTree
+{},{}
+genome
+{},{}
+codonLength
+{},{}
+position
+{},{}
+codeList
+translation
+{}.append({})
+codeList
+value
+dedent
+{} = {}
+indent
+0
+for {} in {}:
+line
+codeList
+if {}:
+{} == {}
+{}[{}]
+line
+-1
+"{}"
+:
+{} += {}
+output
+{} + {}
+"{}"
+\n
+{}*{}
+" "
+{}+{}
+({})
+{}*{}
+5
+indent
+line
+{} += {}
+indent
+1
+dedent
+elif {}:
+{} == {}
+line
+"{}"
+dedent
+{} -= {}
+indent
+1
+dedent
+else:
+{} += {}
+output
+{} + {}
+"{}"
+\n
+{}*{}
+" "
+{}+{}
+({})
+{}*{}
+5
+indent
+line
+dedent
+dedent
+return {}
+output
+dedent
+#####################makeOffspring
+def {}({}):
+makeOffspring
+{},{}
+genome
+translation
+{} = {}
+codonLength
+3
+{} = {}
+offspringNum
+random.randrange({},{})
+1
+40
+{} = {}
+babyName
+{} + {}
+"{}"
+baby
+{} + {}
+str({})
+offspringNum
+"{}"
+.py
+{} = {}
+babyFile
+open({},{})
+babyName
+"w"
+{}.write({})
+babyFile
+{} + {}
+"{}"
+{} = {}
+translation
+ 
+str({})
+translation
+{}.write({})
+babyFile
+{} + {}
+"{}"
+\n
+{} + {}
+"{}"
+{} = {}
+genome
+'
+{} + {}
+genome
+"{}"
+'
+{}.write({})
+babyFile
+{}({})
+translate
+{},{}
+genome
+{},{}
+codonLength
+translation
+{}.close()
+babyFile
+dedent
+{}({})
+makeOffspring
+{},{}
+genome
+translation
