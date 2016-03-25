@@ -1,4 +1,6 @@
-# ALife - Python 2.7
+# ALife
+Python 2.7
+
 The (very raw) beginnings of an artificial life experiment starting with a framework to convert a genome string into functional code.
 
 
