@@ -57,3 +57,4 @@ for aacid in aacids:
     genome += inputDict[aacid]
 
 print "genome = '"+genome+"'"
+print

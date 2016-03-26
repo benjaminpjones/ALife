@@ -9,5 +9,5 @@ reproductionFile uses a genome and translation table (created by genomeGenerator
 genomeAST currently reproduces reproductionFile's code.
 
 
-Organisms beyond the original are named xxx_xxxxxxxx, where x is a random letter. 
+Organisms beyond the original are named xxx_yyyyyyyy, where x is a random number, and y is a random alphanumeric. 
 The first three are used to indicate location in an alphabetically-sorted directory, and the last eight are maintained as a unique organism name.

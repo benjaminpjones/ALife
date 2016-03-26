@@ -178,11 +178,35 @@ dedent
 #######################getRandomString
 def {}({}):
 getRandomString
+{},{}
 length
+kind
+if {}:
+{} == {}
+kind
+'{}'
+letters
 {} = {}
 chars
 '{}'
 abcdefghijklmnopqrstuvwxyz
+dedent
+elif {}:
+{} == {}
+kind
+'{}'
+numbers
+{} = {}
+chars
+'{}'
+0123456789
+dedent
+else:
+{} = {}
+chars
+'{}'
+0123456789abcdefghijklmnopqrstuvwxyz
+dedent
 {} = {}
 string
 ''
@@ -211,12 +235,18 @@ codonLength
 locationID
 {}({})
 getRandomString
+{},{}
 3
+'{}'
+numbers
 {} = {}
 uniqueID
 {}({})
 getRandomString
+{},{}
 8
+'{}'
+alphanumeric
 {} = {}
 offspringName
 {} + {}
