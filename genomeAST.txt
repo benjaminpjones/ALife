@@ -37,14 +37,14 @@ newContainer
 if {}:
 {} != {}
 aacid
-"{}"
+'{}'
 {}
 for {} in {}:
 i
 range({})
 {}.count({})
 aacid
-"{}"
+'{}'
 {}
 {} = {}
 {},{}
@@ -128,15 +128,15 @@ if {}:
 {}[{}]
 line
 -1
-"{}"
+'{}'
 :
 {} += {}
 output
 {} + {}
-"{}"
+'{}'
 \n
 {}*{}
-" "
+' '
 {}+{}
 ({})
 {}*{}
@@ -150,7 +150,7 @@ dedent
 elif {}:
 {} == {}
 line
-"{}"
+'{}'
 dedent
 {} -= {}
 indent
@@ -160,10 +160,10 @@ else:
 {} += {}
 output
 {} + {}
-"{}"
+'{}'
 \n
 {}*{}
-" "
+' '
 {}+{}
 ({})
 {}*{}
@@ -175,6 +175,29 @@ dedent
 return {}
 output
 dedent
+#######################getRandomString
+def {}({}):
+getRandomString
+length
+{} = {}
+chars
+'{}'
+abcdefghijklmnopqrstuvwxyz
+{} = {}
+string
+''
+for {} in {}:
+i
+range({})
+length
+{} += {}
+string
+random.choice({})
+chars
+dedent
+return {}
+string
+dedent
 #####################makeOffspring
 def {}({}):
 makeOffspring
@@ -185,50 +208,63 @@ translation
 codonLength
 3
 {} = {}
-offspringNum
-random.randrange({},{})
-1
-40
+locationID
+{}({})
+getRandomString
+3
 {} = {}
-babyName
+uniqueID
+{}({})
+getRandomString
+8
+{} = {}
+offspringName
 {} + {}
-"{}"
-baby
+locationID
 {} + {}
-str({})
-offspringNum
-"{}"
+'{}'
+_
+{} + {}
+uniqueID
+'{}'
 .py
 {} = {}
-babyFile
-open({},{})
-babyName
-"w"
-{}.write({})
-babyFile
+offspring
+{}({})
+open
+{},{}
+offspringName
+'{}'
+w
+{}.{}({})
+offspring
+write
 {} + {}
-"{}"
+'{}'
 {} = {}
 translation
  
-str({})
+{}({})
+str
 translation
-{}.write({})
-babyFile
+{}.{}({})
+offspring
+write
 {} + {}
-"{}"
+'{}'
 \n
 {} + {}
-"{}"
+'{}'
 {} = {}
 genome
-'
+"
 {} + {}
 genome
-"{}"
-'
-{}.write({})
-babyFile
+'{}'
+"
+{}.{}({})
+offspring
+write
 {}({})
 translate
 {},{}
@@ -236,8 +272,10 @@ genome
 {},{}
 codonLength
 translation
-{}.close()
-babyFile
+{}.{}({})
+offspring
+close
+ 
 dedent
 {}({})
 makeOffspring
