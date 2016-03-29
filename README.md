@@ -4,8 +4,7 @@ Python 2.7
 The (very raw) beginnings of an artificial life experiment starting with a framework to convert a genome string into functional code.
 
 
-genomeGenerator reads genomeAST.txt and prints a genome string and a codon to code string for a model organism.
-reproductionFile uses a genome and translation table (created by genomeGenerator) to create a new Python file in the same directory named 000_aaaaaaaa.py.
+genomeGenerator reads genomeAST.txt and creates a genome and dictionary to translate that genome into code.  It then uses the genome and dictionary to write the code to a new Python file named 000_aaaaaaaa.py.
 
 
 Organisms are named xxx_yyyyyyyy, where x is a random number, and y is a random alphanumeric. 
