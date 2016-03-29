@@ -33,6 +33,7 @@ manually specified by a line 'dedent'
 
 """
 
+## Creating the dictionary and genome from the text file
 inputDict = {}
 
 outputDict = {}
@@ -50,11 +51,56 @@ for i in range(len(aacids)):
 for item in inputDict:
     outputDict[inputDict[item]] = item
 
-print "translation =",outputDict
-
 genome = ""
 for aacid in aacids:
     genome += inputDict[aacid]
 
-print "genome = '"+genome+"'"
-print
+## Creating the first organism
+
+translation = outputDict
+global translation
+codonLength = 3
+global codonLength
+global genome
+
+def getTree(position,container):
+     codon = genome[position:position + codonLength]
+     aacid = translation[codon]
+     position += codonLength
+     newContainer = []
+     if aacid != "{}":
+          for i in range(aacid.count("{}")):
+               value,position = getTree(position,newContainer)
+               newContainer.append(value)
+          aacid = aacid.format(*newContainer)
+     return aacid,position
+def translate():
+     output = ""
+     codeList = []
+     position = 0
+     while position < len(genome):
+          value,position = getTree(position,codeList)
+          codeList.append(value)
+     indent = 0
+     for line in codeList:
+          if line[-1] == ":":
+               output += "\n"+" "*(5*indent)+line
+               indent += 1
+          elif line == "dedent":
+               indent -= 1
+          else:
+               output += "\n"+" "*(5*indent)+line
+     return output
+def makeOffspring():
+     locationID = "000"
+     uniqueID = "aaaaaaaa"
+     offspringName = locationID + "_" + uniqueID + ".py"
+     offspring=open(offspringName,"w")
+     offspring.write("global translation"+"\n")
+     offspring.write("global genome"+"\n")
+     offspring.write("translation = "+str(translation))
+     offspring.write("\n"+"genome = '"+genome+"'")
+     offspring.write(translate())
+     offspring.close()
+
+makeOffspring()

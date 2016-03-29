@@ -1,19 +1,30 @@
 import {}
 {},{}
 sys
+{},{}
 random
+os
+#################################getTraits
+def {}({}):
+getTraits
+ 
+global {}
+metabolism
+global {}
+codonLength
+{} = {}
+metabolism
+.5
+{} = {}
+codonLength
+3
+dedent
 #################################GetTree
 def {}({}):
 getTree
 {},{}
-genome
-{},{}
-codonLength
-{},{}
 position
-{},{}
 container
-translation
 {} = {}
 codon
 {}[{}]
@@ -53,14 +64,8 @@ position
 {}({})
 getTree
 {},{}
-genome
-{},{}
-codonLength
-{},{}
 position
-{},{}
 newContainer
-translation
 {}.append({})
 newContainer
 value
@@ -79,11 +84,7 @@ dedent
 #####################################Translate
 def {}({}):
 translate
-{},{}
-genome
-{},{}
-codonLength
-translation
+
 {} = {}
 output
 ''
@@ -105,14 +106,8 @@ position
 {}({})
 getTree
 {},{}
-genome
-{},{}
-codonLength
-{},{}
 position
-{},{}
 codeList
-translation
 {}.append({})
 codeList
 value
@@ -225,12 +220,7 @@ dedent
 #####################makeOffspring
 def {}({}):
 makeOffspring
-{},{}
-genome
-translation
-{} = {}
-codonLength
-3
+ 
 {} = {}
 locationID
 {}({})
@@ -297,18 +287,155 @@ offspring
 write
 {}({})
 translate
-{},{}
-genome
-{},{}
-codonLength
-translation
+ 
 {}.{}({})
 offspring
 close
  
 dedent
+##################################intToString
+def {}({}):
+intToString
+{},{}
+num
+length
+{} = {}
+num
+str({})
+num
+for {} in {}:
+i
+range({})
+{} - {}
+length
+len({})
+num
+{} = {}
+num
+{} + {}
+"{}"
+0
+num
+dedent
+return {}
+num
+dedent
+#################################getNewPosition
+def {}({}):
+getNewPosition
+{},{}
+position
+direction
+return {}
+{} % {}
+({})
+{} + {}
+int({})
+position
+direction
+1000
+dedent
+################################move
+def {}({}):
+move
+{},{}
+organismName
+distance
+{} = {}
+{},{}
+position
+uniqueID
+{}.split({})
+organismName
+"{}"
+_
+if {}:
+{} < {}
+random.random
+.5
+{} = {}
+direction
+1
+dedent
+else:
+{} = {}
+direction
+-1
+dedent
+for {} in {}:
+i
+range({})
+distance
+{} = {}
+position
+{}({})
+intToString
+{},{}
+{}({})
+getNewPosition
+{},{}
+position
+direction
+3
+{} = {}
+newName
+{} + {}
+position
+{} + {}
+"{}"
+_
+uniqueID
+os.rename({},{})
+organismName
+newName
+{} = {}
+organismName
+newName
+dedent
+dedent
+######################tryToMove
+def {}({}):
+tryToMove
+ 
+if {}:
+{} < {}
+random.random()
+metabolism
+{} = {}
+selfName
+{}[{}]
+{}.split({})
+{}[{}]
+{}.split({})
+sys.argv[0]
+"{}"
+\\
+-1
+"{}"
+/
+-1
+{} = {}
+distance
+int({})
+{}*{}
+metabolism
+random.uniform({},{})
+1
+100
+{}({})
+move
+{},{}
+selfName
+distance
+dedent
+dedent
+########################main
+{}({})
+getTraits
+ 
+{}({})
+tryToMove
+ 
 {}({})
 makeOffspring
-{},{}
-genome
-translation
+ 
