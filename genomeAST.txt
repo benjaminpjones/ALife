@@ -12,12 +12,38 @@ global {}
 metabolism
 global {}
 codonLength
+global {}
+selfName
+global {}
+world
 {} = {}
 metabolism
 .5
 {} = {}
 codonLength
 3
+{} = {}
+selfName
+{}[{}]
+{}.split({})
+{}[{}]
+{}.split({})
+{}[{}]
+sys.argv
+0
+"{}"
+\\
+-{}
+1
+"{}"
+/
+-{}
+1
+{} = {}
+world
+{}({})
+os.getcwd
+ 
 dedent
 #################################GetTree
 def {}({}):
@@ -293,6 +319,16 @@ offspring
 close
  
 dedent
+##################################splitName
+def {}({}):
+splitName
+name
+return {}
+{}.split({})
+name
+"{}"
+_
+dedent
 ##################################intToString
 def {}({}):
 intToString
@@ -360,7 +396,8 @@ dedent
 else:
 {} = {}
 direction
--1
+-{}
+1
 dedent
 for {} in {}:
 i
@@ -392,6 +429,8 @@ newName
 organismName
 newName
 dedent
+return {}
+organismName
 dedent
 ######################tryToMove
 def {}({}):
@@ -423,19 +462,128 @@ random.uniform({},{})
 1
 100
 {}({})
+return {}
 move
 {},{}
 selfName
 distance
 dedent
 dedent
+###############################getAllOrganisms
+def {}({}):
+getAllOrganisms
+world
+{} = {}
+organisms
+[{}]
+ 
+for {} in {}:
+organism
+os.listdir({})
+world
+if {}:
+{} == {}
+{}[{}]
+organism
+{}:{}
+-{}
+3
+ 
+"{}"
+.py
+{}.append({})
+organisms
+organism
+dedent
+dedent
+return {}
+organisms
+dedent
+##############################findNearbyOrganisms
+def {}({}):
+findNearbyOrganisms
+{},{}
+organisms
+{},{}
+self
+distance
+{} = {}
+location
+int({})
+{}[{}]
+{}({})
+splitName
+self
+0
+{} = {}
+nearby
+[{}]
+ 
+for {} in {}:
+organism
+organisms
+if {}:
+{} != {}
+organism
+self
+{} = {}
+organismLocation
+int({})
+{}[{}]
+{}({})
+splitName
+organism
+0
+if {}:
+{} or {}
+{} < {}
+abs({})
+{} - {}
+organismLocation
+location
+distance
+{} > {}
+abs({})
+{} - {}
+organismLocation
+location
+({})
+{} - {}
+1000
+distance
+{}.append({})
+nearby
+organism
+dedent
+dedent
+dedent
+return {}
+nearby
+dedent
 ########################main
 {}({})
 getTraits
  
+{} = {}
+selfName
 {}({})
 tryToMove
  
+{} = {}
+organisms
+{}({})
+getAllOrganisms
+world
+organisms.remove("genomeGenerator.py")
+{} = {}
+nearby
+{}({})
+findNearbyOrganisms
+{},{}
+organisms
+{},{}
+selfName
+30
 {}({})
 makeOffspring
  

@@ -51,17 +51,17 @@ for i in range(len(aacids)):
 for item in inputDict:
     outputDict[inputDict[item]] = item
 
+global genome
 genome = ""
 for aacid in aacids:
     genome += inputDict[aacid]
 
 ## Creating the first organism
-
-translation = outputDict
 global translation
-codonLength = 3
+translation = outputDict
 global codonLength
-global genome
+codonLength = 3
+
 
 def getTree(position,container):
      codon = genome[position:position + codonLength]
