@@ -468,6 +468,8 @@ move
 selfName
 distance
 dedent
+return {}
+selfName
 dedent
 ###############################getAllOrganisms
 def {}({}):
