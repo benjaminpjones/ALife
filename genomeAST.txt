@@ -438,19 +438,8 @@ dedent
 def {}({}):
 tryToMove
  
-{} = {}
+global {}
 selfName
-{}[{}]
-{}.split({})
-{}[{}]
-{}.split({})
-sys.argv[0]
-"{}"
-\\
--1
-"{}"
-/
--1
 if {}:
 {} < {}
 random.random()
@@ -464,14 +453,11 @@ random.uniform({},{})
 1
 100
 {}({})
-return {}
 move
 {},{}
 selfName
 distance
 dedent
-return {}
-selfName
 dedent
 ###############################getAllOrganisms
 def {}({}):
@@ -568,7 +554,7 @@ dedent
 {} = {}
 startConditions
 raw_input({})
-
+ 
 try:
 {} = {}
 startConditions
@@ -579,7 +565,7 @@ except:
 {} = {}
 startConditions
 dict({})
-
+ 
 dedent
 if {}:
 {} != {}
@@ -589,7 +575,7 @@ dict
 {} = {}
 startConditions
 dict({})
-
+ 
 dedent
 if {}:
 {} == {}
@@ -601,8 +587,6 @@ None
 {}({})
 getTraits
  
-{} = {}
-selfName
 {}({})
 tryToMove
  
