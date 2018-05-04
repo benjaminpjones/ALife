@@ -436,10 +436,6 @@ dedent
 def {}({}):
 tryToMove
  
-if {}:
-{} < {}
-random.random()
-metabolism
 {} = {}
 selfName
 {}[{}]
@@ -453,6 +449,10 @@ sys.argv[0]
 "{}"
 /
 -1
+if {}:
+{} < {}
+random.random()
+metabolism
 {} = {}
 distance
 int({})
