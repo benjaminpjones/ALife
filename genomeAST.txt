@@ -3,7 +3,9 @@ import {}
 sys
 {},{}
 random
+{},{}
 os
+json
 #################################getTraits
 def {}({}):
 getTraits
@@ -563,6 +565,39 @@ return {}
 nearby
 dedent
 ########################main
+{} = {}
+startConditions
+raw_input({})
+
+try:
+{} = {}
+startConditions
+json.loads({})
+startConditions
+dedent
+except:
+{} = {}
+startConditions
+dict({})
+
+dedent
+if {}:
+{} != {}
+type({})
+startConditions
+dict
+{} = {}
+startConditions
+dict({})
+
+dedent
+if {}:
+{} == {}
+{}.get({})
+startConditions
+"{}"
+acting_program
+None
 {}({})
 getTraits
  
