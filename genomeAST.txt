@@ -18,6 +18,8 @@ global {}
 selfName
 global {}
 world
+global {}
+sightDistance
 {} = {}
 metabolism
 .5
@@ -46,6 +48,9 @@ world
 {}({})
 os.getcwd
  
+{} = {}
+sightDistance
+30
 dedent
 #################################GetTree
 def {}({}):
@@ -492,18 +497,14 @@ dedent
 ##############################findNearbyOrganisms
 def {}({}):
 findNearbyOrganisms
-{},{}
 organisms
-{},{}
-self
-distance
 {} = {}
 location
 int({})
 {}[{}]
 {}({})
 splitName
-self
+selfName
 0
 {} = {}
 nearby
@@ -515,7 +516,7 @@ organisms
 if {}:
 {} != {}
 organism
-self
+selfName
 {} = {}
 organismLocation
 int({})
@@ -531,7 +532,7 @@ abs({})
 {} - {}
 organismLocation
 location
-distance
+sightDistance
 {} > {}
 abs({})
 {} - {}
@@ -540,7 +541,7 @@ location
 ({})
 {} - {}
 1000
-distance
+sightDistance
 {}.append({})
 nearby
 organism
@@ -600,11 +601,7 @@ organisms.remove("genomeGenerator.py")
 nearby
 {}({})
 findNearbyOrganisms
-{},{}
 organisms
-{},{}
-selfName
-30
 {}({})
 makeOffspring
  
