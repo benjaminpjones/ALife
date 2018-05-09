@@ -83,7 +83,9 @@ def translate():
           codeList.append(value)
      indent = 0
      for line in codeList:
-          if line[-1] == ":":
+          if len(line) == 0:
+              output += "\n"
+          elif line[-1] == ":":
                output += "\n"+" "*(5*indent)+line
                indent += 1
           elif line == "dedent":
@@ -96,8 +98,6 @@ def makeOffspring():
      uniqueID = "aaaaaaaa"
      offspringName = locationID + "_" + uniqueID + ".py"
      offspring=open(offspringName,"w")
-     offspring.write("global translation"+"\n")
-     offspring.write("global genome"+"\n")
      offspring.write("translation = "+str(translation))
      offspring.write("\n"+"genome = '"+genome+"'")
      offspring.write(translate())
