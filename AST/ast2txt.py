@@ -127,7 +127,7 @@ def ast2txt(tree, ast_str=""):
             op_txt = '&'
         if isinstance(tree.op, ast.FloorDiv):
             op_txt = '//'
-        ast_str += '{}' + op_txt + '{}\n'
+        ast_str += '({}' + op_txt + '{})\n'
         ast_str += ast2txt(tree.left)
         ast_str += ast2txt(tree.right)
         return ast_str
@@ -146,6 +146,39 @@ def ast2txt(tree, ast_str=""):
             args_list += '>>' + ast2txt(tree.dest)
         args_list += [ast2txt(arg) for arg in tree.values]
         ast_str += comma_separated(args_list)
+        return ast_str
+
+    if isinstance(tree, ast.Dict):
+        ast_str += '{{{}}}\n'
+        kw_pairs = []
+        for i in xrange(len(tree.keys)):
+            kw_pairs.append('{}:{}\n')
+            kw_pairs[-1] += ast2txt(tree.keys[i])
+            kw_pairs[-1] += ast2txt(tree.values[i])
+        ast_str += comma_separated(kw_pairs)
+        return ast_str
+
+    if isinstance(tree, ast.Str):
+        ast_str += tree.s + '\n'
+        return ast_str
+
+    if isinstance(tree, ast.Import):
+        ast_str += 'import {}\n'
+        modules = [ast2txt(m) for m in tree.names]
+        ast_str += comma_separated(modules)
+        return ast_str
+
+    if isinstance(tree, ast.alias):
+        if tree.asname:
+            ast_str += '{} as {}\n'
+        ast_str += tree.name + '\n'
+        if tree.asname:
+            ast_str += tree.asname + '\n'
+        return ast_str
+
+    if isinstance(tree, ast.Global):
+        ast_str += 'global {}\n'
+        ast_str += comma_separated(tree.names)
         return ast_str
 
     print "Did not know what to do with",

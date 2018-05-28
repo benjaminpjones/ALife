@@ -31,5 +31,4 @@ astfilename = pyToTxt(filename)
 astfile = open(astfilename, 'w')
 
 ast_text = ast2txt(tree)
-print(ast_text)
 astfile.write(ast_text)
