@@ -2,13 +2,18 @@ import ast
 
 def comma_separated(args):
     if not args:
-        return ""
+        return "\n"
     ast_str = ""
     for arg in args[:-1]:
         ast_str += '{},{}\n'
         ast_str += arg
     ast_str += args[-1]
     return ast_str
+
+operators = { ast.Add: '+', ast.Sub: '-', ast.Mult: '*', ast.Div: '/',
+              ast.Mod: '%', ast.Pow: '**', ast.LShift: '<<', ast.RShift: '>>',
+              ast.BitOr: '|', ast.BitXor: '^', ast.BitAnd: '&',
+              ast.FloorDiv: '//' }
 
 # Appends tree's string representation to ast+string
 def ast2txt(tree, ast_str=""):
@@ -22,8 +27,8 @@ def ast2txt(tree, ast_str=""):
     if isinstance(tree, ast.FunctionDef):
         for decorator in tree.decorator_list:
             ast_str += '@{}\n' + decorator.id + '\n'
-        ast_str += "def {}({}):\n"
-        ast_str += tree.name + '\n'
+        ast_str += 'def {}({}):\n'
+        ast_str += ast2txt(tree.name)
         ast_str += ast2txt(tree.args)
         for node in tree.body:
             ast_str += ast2txt(node)
@@ -49,7 +54,7 @@ def ast2txt(tree, ast_str=""):
 
     # names
     if isinstance(tree, ast.Name):
-        ast_str += tree.id + '\n'
+        ast_str += ast2txt(tree.id)
         return ast_str
 
     # numbers
@@ -93,41 +98,19 @@ def ast2txt(tree, ast_str=""):
         ast_str += comma_separated(args_list)
         return ast_str
 
+    # pass statements
     if isinstance(tree, ast.Pass):
         ast_str += 'pass\n'
         return ast_str
 
+    # expressions
     if isinstance(tree, ast.Expr):
         ast_str += ast2txt(tree.value)
         return ast_str
 
+    # binary operations
     if isinstance(tree, ast.BinOp):
-        op_txt = str()
-        if isinstance(tree.op, ast.Add):
-            op_txt = '+'
-        if isinstance(tree.op, ast.Sub):
-            op_txt = '-'
-        if isinstance(tree.op, ast.Mult):
-            op_txt = '*'
-        if isinstance(tree.op, ast.Div):
-            op_txt = '/'
-        if isinstance(tree.op, ast.Mod):
-            op_txt = '%'
-        if isinstance(tree.op, ast.Pow):
-            op_txt = '**'
-        if isinstance(tree.op, ast.LShift):
-            op_txt = '<<'
-        if isinstance(tree.op, ast.RShift):
-            op_txt = '>>'
-        if isinstance(tree.op, ast.BitOr):
-            op_txt = '|'
-        if isinstance(tree.op, ast.BitXor):
-            op_txt = '^'
-        if isinstance(tree.op, ast.BitAnd):
-            op_txt = '&'
-        if isinstance(tree.op, ast.FloorDiv):
-            op_txt = '//'
-        ast_str += '({}' + op_txt + '{})\n'
+        ast_str += '({}' + operators[type(tree.op)] + '{})\n'
         ast_str += ast2txt(tree.left)
         ast_str += ast2txt(tree.right)
         return ast_str
@@ -144,10 +127,12 @@ def ast2txt(tree, ast_str=""):
         if tree.dest:
             # the >> operator indicates a destination other than stdout
             args_list += '>>' + ast2txt(tree.dest)
-        args_list += [ast2txt(arg) for arg in tree.values]
-        ast_str += comma_separated(args_list)
+        if tree.values:
+            args_list += [ast2txt(arg) for arg in tree.values]
+            ast_str += comma_separated(args_list)
         return ast_str
 
+    # dictionaries
     if isinstance(tree, ast.Dict):
         ast_str += '{{{}}}\n'
         kw_pairs = []
@@ -158,29 +143,76 @@ def ast2txt(tree, ast_str=""):
         ast_str += comma_separated(kw_pairs)
         return ast_str
 
+    # strings
     if isinstance(tree, ast.Str):
-        ast_str += tree.s + '\n'
+        ast_str += '"{}"\n'
+        ast_str += tree.s.replace('\\','\\\\').replace('"','\\"') + '\n'
         return ast_str
 
+    # import statements
     if isinstance(tree, ast.Import):
         ast_str += 'import {}\n'
         modules = [ast2txt(m) for m in tree.names]
         ast_str += comma_separated(modules)
         return ast_str
 
+    # aliases
     if isinstance(tree, ast.alias):
         if tree.asname:
             ast_str += '{} as {}\n'
-        ast_str += tree.name + '\n'
+        ast_str += ast2txt(tree.name)
         if tree.asname:
-            ast_str += tree.asname + '\n'
+            ast_str += ast2txt(tree.asname)
         return ast_str
 
+    # global variables
     if isinstance(tree, ast.Global):
         ast_str += 'global {}\n'
-        ast_str += comma_separated(tree.names)
+        ast_str += comma_separated([ast2txt(name) for name in tree.names])
+        return ast_str
+
+    # subscript operators (to get an element from a List)
+    if isinstance(tree, ast.Subscript):
+        ast_str += '{}[{}]\n'
+        ast_str += ast2txt(tree.value)
+        ast_str += ast2txt(tree.slice)
+        return ast_str
+
+    # indices
+    if isinstance(tree, ast.Index):
+        ast_str += ast2txt(tree.value)
+        return ast_str
+
+    # slices
+    if isinstance(tree, ast.Slice):
+        ast_str += '{}:{}'
+        if tree.step:
+            ast_str += ':{}'
+        ast_str += '\n'
+        ast_str += ast2txt(tree.lower)
+        ast_str += ast2txt(tree.upper)
+        if tree.step:
+            ast_str += ast2txt(tree.step)
+        return ast_str
+
+    # plaintext string (usually an id for a Name object)
+    if isinstance(tree, str):
+        return ast_str + tree + '\n'
+
+    # object attributes (i.e. class members)
+    if isinstance(tree, ast.Attribute):
+        ast_str += '{}.{}\n'
+        ast_str += ast2txt(tree.value)
+        ast_str += ast2txt(tree.attr)
+        return ast_str
+
+    # augment assignments
+    if isinstance(tree, ast.AugAssign):
+        ast_str += '{}' + operators[type(tree.op)] + '={}\n'
+        ast_str += ast2txt(tree.target)
+        ast_str += ast2txt(tree.value)
         return ast_str
 
     print "Did not know what to do with",
     print type(tree)
-    return ast_str
+    return ast_str + 'NOT IMPLEMENTED\n'
