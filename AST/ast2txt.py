@@ -222,7 +222,9 @@ def ast2txt(tree, ast_str=""):
 
     # keyword
     if isinstance(tree, ast.keyword):
-        ast_str += tree.arg+'\n'
+        ast_str += '{} = {}\n'
+        ast_str += tree.arg + '\n'
+        ast_str += ast2txt(tree.value) + '\n'
         return ast_str
 
     if isinstance(tree, ast.List):
@@ -239,13 +241,18 @@ def ast2txt(tree, ast_str=""):
         ast_str += 'while {}:\n'
         ast_str += ast2txt(tree.test)
         ast_str += ast2txt(tree.body)
+        ast_str += 'dedent\n'
         return ast_str
 
     if isinstance(tree, ast.Compare):
-        operation = operators[type(tree.ops[0])]
-        ast_str += '({} ' + operation + ' {})\n'
+        first_op = operators[type(tree.ops[0])]
+        ast_str += '{} ' + first_op + ' {}\n'
         ast_str += ast2txt(tree.left)
-        ast_str += ast2txt(tree.comparators)
+        for i in range(1,len(tree.ops)):
+            next_op = operators[type(tree.ops[i])]
+            ast_str += '{} ' + next_op + ' {}\n'
+            ast_str += ast2txt(tree.comparators[i-1])
+        ast_str += ast2txt(tree.comparators[-1])
         return ast_str
 
     if isinstance(tree, list):
