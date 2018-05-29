@@ -13,7 +13,8 @@ def comma_separated(args):
 operators = { ast.Add: '+', ast.Sub: '-', ast.Mult: '*', ast.Div: '/',
               ast.Mod: '%', ast.Pow: '**', ast.LShift: '<<', ast.RShift: '>>',
               ast.BitOr: '|', ast.BitXor: '^', ast.BitAnd: '&',
-              ast.FloorDiv: '//' }
+              ast.FloorDiv: '//', ast.Lt: '<', ast.LtE: '<=', ast.Gt: '>',
+              ast.GtE: '>=', ast.Eq: '=='}
 
 # Appends tree's string representation to ast+string
 def ast2txt(tree, ast_str=""):
@@ -168,7 +169,7 @@ def ast2txt(tree, ast_str=""):
     # global variables
     if isinstance(tree, ast.Global):
         ast_str += 'global {}\n'
-        ast_str += comma_separated([ast2txt(name) for name in tree.names])
+        ast_str += comma_separated([ast2txt(name) for name in tree.names]) + '\n'
         return ast_str
 
     # subscript operators (to get an element from a List)
@@ -213,6 +214,43 @@ def ast2txt(tree, ast_str=""):
         ast_str += ast2txt(tree.value)
         return ast_str
 
-    print "Did not know what to do with",
-    print type(tree)
+    # return statement
+    if isinstance(tree, ast.Return):
+        ast_str += 'return {}\n'
+        ast_str += ast2txt(tree.value)
+        return ast_str
+
+    # keyword
+    if isinstance(tree, ast.keyword):
+        ast_str += tree.arg+'\n'
+        return ast_str
+
+    if isinstance(tree, ast.List):
+        ast_str += '[{}]\n'
+        ast_str += comma_separated([ast2txt(element) for element in tree.elts])
+        return ast_str
+
+    if isinstance(tree, ast.Tuple):
+        ast_str += '({})\n'
+        ast_str += comma_separated([ast2txt(element) for element in tree.elts])
+        return ast_str
+
+    if isinstance(tree, ast.While):
+        ast_str += 'while {}:\n'
+        ast_str += ast2txt(tree.test)
+        ast_str += ast2txt(tree.body)
+        return ast_str
+
+    if isinstance(tree, ast.Compare):
+        operation = operators[type(tree.ops[0])]
+        ast_str += '({} ' + operation + ' {})\n'
+        ast_str += ast2txt(tree.left)
+        ast_str += ast2txt(tree.comparators)
+        return ast_str
+
+    if isinstance(tree, list):
+        ast_str += comma_separated([ast2txt(element) for element in tree])
+        return ast_str
+
+    print "Did not know what to do with",type(tree)
     return ast_str + 'NOT IMPLEMENTED\n'
