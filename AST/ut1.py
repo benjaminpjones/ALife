@@ -1,6 +1,7 @@
 import ast
 from makeAST import getValidFileFromUser
 from ast2txt import ast2txt
+from difflib import unified_diff
 
 def pdumpAST(tree):
     ast_str = ast.dump(tree)
@@ -63,18 +64,28 @@ def txt2src(txt_str):
             output += "\n" + " " * (4 * indent) + line
     return output
         
-    
-
 if __name__ == '__main__':
     f, filename = getValidFileFromUser()
     source = f.read()
     tree = ast.parse(source)
-    print pdumpAST(tree)
 
     txtTree = ast2txt(tree)
 
     # round-trip source
-    rtSource = txt2src(txtTree) 
-    print rtSource
+    rt_source = txt2src(txtTree) 
+    print rt_source
 
+    # Finally, run ast again.
+    rt_tree = ast.parse(rt_source)
 
+    print pdumpAST(rt_tree)
+    print pdumpAST(tree)
+
+    # dif
+    num_lines = 0
+    for line in unified_diff(pdumpAST(rt_tree), pdumpAST(rt_tree)):
+        num_lines += 1
+        print line
+
+    if not num_lines:
+        print "TEST PASSED: ASTs are identical!"
