@@ -7,28 +7,32 @@ def pyToTxt(filename):
         filename = filename[:-3] + '.txt'
     return filename
 
-# get a filename
-filename = None
-if len(sys.argv) > 1:
-    filename = sys.argv[1]
-else:
-    filename = raw_input('Please enter the filename of a python script: ')
-
-f = None
-while (True):
-    try:
-        f = open(filename)
-    except:
-        print 'Error opening file', filename
-        filename = raw_input('Please enter another filename: ')
+def getValidFileFromUser():
+    filename = None
+    if len(sys.argv) > 1:
+        filename = sys.argv[1]
     else:
-        break
+        filename = raw_input('Please enter the filename of a python script: ')
 
-filetext = f.read()
-tree = ast.parse(filetext)
+    f = None
+    while (True):
+        try:
+            f = open(filename)
+        except:
+            print 'Error opening file', filename
+            filename = raw_input('Please enter another filename: ')
+        else:
+            break
+    return f, filename
 
-astfilename = pyToTxt(filename)
-astfile = open(astfilename, 'w')
 
-ast_text = ast2txt(tree)
-astfile.write(ast_text)
+if __name__ == '__main__':
+    f, filename = getValidFileFromUser()
+    filetext = f.read()
+    tree = ast.parse(filetext)
+
+    astfilename = pyToTxt(filename)
+    astfile = open(astfilename, 'w')
+
+    ast_text = ast2txt(tree)
+    astfile.write(ast_text)
