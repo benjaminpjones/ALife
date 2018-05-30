@@ -14,10 +14,11 @@ operators = { ast.Add: '+', ast.Sub: '-', ast.Mult: '*', ast.Div: '/',
               ast.Mod: '%', ast.Pow: '**', ast.LShift: '<<', ast.RShift: '>>',
               ast.BitOr: '|', ast.BitXor: '^', ast.BitAnd: '&',
               ast.FloorDiv: '//', ast.Lt: '<', ast.LtE: '<=', ast.Gt: '>',
-              ast.GtE: '>=', ast.Eq: '=='}
+              ast.GtE: '>=', ast.Eq: '==', ast.NotEq: '!=', ast.Or: 'or',
+              ast.And: 'and'}
 
 # Appends tree's string representation to ast+string
-def ast2txt(tree, ast_str=""):
+def ast2txt(tree, ast_str='', parent_node = None):
     # module object (exists for every program)
     if isinstance(tree, ast.Module):
         for node in tree.body:
@@ -62,7 +63,7 @@ def ast2txt(tree, ast_str=""):
     if isinstance(tree, ast.Num):
         ast_str += str(tree.n) + '\n'
         return ast_str
-    
+
     # assignments
     if isinstance(tree, ast.Assign):
         for target in tree.targets:
@@ -214,29 +215,32 @@ def ast2txt(tree, ast_str=""):
         ast_str += ast2txt(tree.value)
         return ast_str
 
-    # return statement
+    # return statements
     if isinstance(tree, ast.Return):
         ast_str += 'return {}\n'
         ast_str += ast2txt(tree.value)
         return ast_str
 
-    # keyword
+    # keywords
     if isinstance(tree, ast.keyword):
         ast_str += '{} = {}\n'
         ast_str += tree.arg + '\n'
         ast_str += ast2txt(tree.value) + '\n'
         return ast_str
 
+    # lists
     if isinstance(tree, ast.List):
         ast_str += '[{}]\n'
         ast_str += comma_separated([ast2txt(element) for element in tree.elts])
         return ast_str
 
+    # tuples
     if isinstance(tree, ast.Tuple):
         ast_str += '({})\n'
         ast_str += comma_separated([ast2txt(element) for element in tree.elts])
         return ast_str
 
+    # while statements
     if isinstance(tree, ast.While):
         ast_str += 'while {}:\n'
         ast_str += ast2txt(tree.test)
@@ -244,19 +248,80 @@ def ast2txt(tree, ast_str=""):
         ast_str += 'dedent\n'
         return ast_str
 
+    # comparisons
     if isinstance(tree, ast.Compare):
         first_op = operators[type(tree.ops[0])]
-        ast_str += '{} ' + first_op + ' {}\n'
+        ast_str += '{}' + first_op + '{}\n'
         ast_str += ast2txt(tree.left)
         for i in range(1,len(tree.ops)):
             next_op = operators[type(tree.ops[i])]
-            ast_str += '{} ' + next_op + ' {}\n'
+            ast_str += '{}' + next_op + '{}\n'
             ast_str += ast2txt(tree.comparators[i-1])
         ast_str += ast2txt(tree.comparators[-1])
         return ast_str
 
+    # lists
     if isinstance(tree, list):
         ast_str += comma_separated([ast2txt(element) for element in tree])
+        return ast_str
+
+    # if statements
+    if isinstance(tree, ast.If):
+        # elifs are nested if statements in the tree structure
+        if isinstance(parent_node, ast.If):
+            ast_str += 'elif {}:\n'
+        else:
+            ast_str += 'if {}:\n'
+        ast_str += ast2txt(tree.test)
+        for node in tree.body:
+            ast_str += ast2txt(node)
+        ast_str += 'dedent\n'
+        for node in tree.orelse:
+            # Elif statements are If nodes
+            if isinstance(node, ast.If):
+                ast_str += ast2txt(node,parent_node=tree)
+            # 'Else' doesn't have a node of its own
+            else:
+                ast_str += 'else:\n'
+                ast_str += ast2txt(node)
+                ast_str += 'dedent\n'
+        return ast_str
+
+    # Boolean operations
+    if isinstance(tree, ast.BoolOp):
+        ast_str += '({}' + operators[type(tree.op)] + '{})\n'
+        for val in tree.values:
+            ast_str += ast2txt(val)
+        return ast_str
+
+    # try/except clause
+    if isinstance(tree, ast.TryExcept):
+        # body handlers orelse
+        ast_str += 'try:\n'
+        ast_str += ast2txt(tree.body)
+        ast_str += 'dedent\n'
+        for handler in tree.handlers:
+            ast_str += ast2txt(handler)
+        if tree.orelse:
+            ast_str += 'else:\n'
+            ast_str += ast2txt(tree.orelse)
+            ast_str += 'dedent\n'
+        return ast_str
+
+    # except clause
+    if isinstance(tree, ast.ExceptHandler):
+        if tree.type:
+            ast_str += 'except {}:\n'
+            if tree.name:
+                ast_str += '{} as {}\n'
+                ast_str += ast2txt(tree.type)
+                ast_str += ast2txt(tree.name)
+            else:
+                ast_str += ast2txt(tree.type)
+        else:
+            ast_str += 'except:\n'
+        ast_str += ast2txt(tree.body)
+        ast_str += 'dedent\n'
         return ast_str
 
     print "Did not know what to do with",type(tree)
