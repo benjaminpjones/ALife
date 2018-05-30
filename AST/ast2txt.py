@@ -14,8 +14,8 @@ operators = { ast.Add: '+', ast.Sub: '-', ast.Mult: '*', ast.Div: '/',
               ast.Mod: '%', ast.Pow: '**', ast.LShift: '<<', ast.RShift: '>>',
               ast.BitOr: '|', ast.BitXor: '^', ast.BitAnd: '&',
               ast.FloorDiv: '//', ast.Lt: '<', ast.LtE: '<=', ast.Gt: '>',
-              ast.GtE: '>=', ast.Eq: '==', ast.NotEq: '!=', ast.Or: 'or',
-              ast.And: 'and'}
+              ast.GtE: '>=', ast.Eq: '==', ast.NotEq: '!=', ast.Or: ' or ',
+              ast.And: ' and ', ast.In: ' in '}
 
 # Appends tree's string representation to ast+string
 def ast2txt(tree, ast_str='', parent_node = None):
@@ -277,24 +277,15 @@ def ast2txt(tree, ast_str='', parent_node = None):
 
     # if statements
     if isinstance(tree, ast.If):
-        # elifs are nested if statements in the tree structure
-        if isinstance(parent_node, ast.If):
-            ast_str += 'elif {}:\n'
-        else:
-            ast_str += 'if {}:\n'
+        ast_str += 'if {}:\n'
         ast_str += ast2txt(tree.test)
         for node in tree.body:
             ast_str += ast2txt(node)
         ast_str += 'dedent\n'
         for node in tree.orelse:
-            # Elif statements are If nodes
-            if isinstance(node, ast.If):
-                ast_str += ast2txt(node,parent_node=tree)
-            # 'Else' doesn't have a node of its own
-            else:
-                ast_str += 'else:\n'
-                ast_str += ast2txt(node)
-                ast_str += 'dedent\n'
+            ast_str += 'else:\n'
+            ast_str += ast2txt(node)
+            ast_str += 'dedent\n'
         return ast_str
 
     # Boolean operations

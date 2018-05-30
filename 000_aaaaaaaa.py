@@ -19,8 +19,8 @@ def getTree(position,container):
      aacid = translation[codon]
      position += codonLength
      newContainer = []
-     if aacid != '{}':
-          for i in range(aacid.count('{}')):
+    if aacid != '{}':
+        for i in range(aacid.count('{}')):
                value,position = getTree(position,newContainer)
                newContainer.append(value)
           aacid = aacid.format(*newContainer)
@@ -30,29 +30,29 @@ def translate():
      output = ''
      codeList = []
      position = 0
-     while position < len(genome):
+    while position < len(genome):
           value,position = getTree(position,codeList)
           codeList.append(value)
      indent = 0
-     for line in codeList:
-          if line[-1] == ':':
+    for line in codeList:
+        if line[-1] == ':':
                output += '\n' + ' '*(5*indent)+line
                indent += 1
-          elif line == 'dedent':
+        elif line == 'dedent':
                indent -= 1
-          else:
+        else:
                output += '\n' + ' '*(5*indent)+line
      return output
 #################################getRandomString
 def getRandomString(length,kind):
-     if kind == 'letters':
+    if kind == 'letters':
           chars = 'abcdefghijklmnopqrstuvwxyz'
-     elif kind == 'numbers':
+    elif kind == 'numbers':
           chars = '0123456789'
-     else:
+    else:
           chars = '0123456789abcdefghijklmnopqrstuvwxyz'
      string = ''
-     for i in range(length):
+    for i in range(length):
           string += random.choice(chars)
      return string
 #################################makeOffspring
@@ -71,7 +71,7 @@ def splitName(name):
 #################################intToString
 def intToString(num,length):
      num = str(num)
-     for i in range(length - len(num)):
+    for i in range(length - len(num)):
           num = "0" + num
      return num
 #################################getNewPosition
@@ -81,18 +81,18 @@ def getNewPosition(position,direction):
 def move(distance):
      global selfName
      position,uniqueID = selfName.split("_")
-     if random.random < .5:
+    if random.random < .5:
           direction = 1
-     else:
+    else:
           direction = -1
-     for i in range(distance):
+    for i in range(distance):
           position = intToString(getNewPosition(position,direction),3)
           newName = position + "_" + uniqueID
           os.rename(selfName,newName)
           selfName = newName
 #################################tryToMove
 def tryToMove():
-     if random.random() < metabolism:
+    if random.random() < metabolism:
           distance = int(metabolism*random.uniform(1,100))
           move(distance)
 #################################initiateInteraction
@@ -113,18 +113,18 @@ def getMessage():
 #################################getAllOrganisms
 def getAllOrganisms(world):
      organisms = []
-     for organism in os.listdir(world):
-          if organism[-3:] == ".py":
+    for organism in os.listdir(world):
+        if organism[-3:] == ".py":
                organisms.append(organism)
      return organisms
 #################################findNearbyOrganisms
 def findNearbyOrganisms(organisms):
      location = int(splitName(selfName)[0])
      nearby = []
-     for organism in organisms:
-          if organism != selfName:
+    for organism in organisms:
+        if organism != selfName:
                organismLocation = int(splitName(organism)[0])
-               if abs(organismLocation - location) < sightDistance or abs(organismLocation - location) > (1000 - sightDistance):
+            if abs(organismLocation - location) < sightDistance or abs(organismLocation - location) > (1000 - sightDistance):
                     nearby.append(organism)
      return nearby
 #################################main
@@ -141,7 +141,7 @@ if startConditions.get("acting_organism") == None:
      organisms = getAllOrganisms(world)
      organisms.remove("genomeGenerator.py")
      nearby = findNearbyOrganisms(organisms)
-     if nearby:
+    if nearby:
           initiateInteraction(nearby)
      makeOffspring()
 else:
