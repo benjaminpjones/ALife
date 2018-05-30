@@ -13,7 +13,8 @@ def comma_separated(args):
 operators = { ast.Add: '+', ast.Sub: '-', ast.Mult: '*', ast.Div: '/',
               ast.Mod: '%', ast.Pow: '**', ast.LShift: '<<', ast.RShift: '>>',
               ast.BitOr: '|', ast.BitXor: '^', ast.BitAnd: '&',
-              ast.FloorDiv: '//' }
+              ast.FloorDiv: '//', ast.Lt: '<', ast.LtE: '<=', ast.Gt: '>',
+              ast.GtE: '>=', ast.Eq: '=='}
 
 # Appends tree's string representation to ast+string
 def ast2txt(tree, ast_str=""):
@@ -213,6 +214,50 @@ def ast2txt(tree, ast_str=""):
         ast_str += ast2txt(tree.value)
         return ast_str
 
-    print "Did not know what to do with",
-    print type(tree)
+    # return statement
+    if isinstance(tree, ast.Return):
+        ast_str += 'return {}\n'
+        ast_str += ast2txt(tree.value)
+        return ast_str
+
+    # keyword
+    if isinstance(tree, ast.keyword):
+        ast_str += '{}={}\n'
+        ast_str += ast2txt(tree.arg)
+        ast_str += ast2txt(tree.value)
+        return ast_str
+
+    if isinstance(tree, ast.List):
+        ast_str += '[{}]\n'
+        ast_str += comma_separated([ast2txt(element) for element in tree.elts])
+        return ast_str
+
+    if isinstance(tree, ast.Tuple):
+        ast_str += '({})\n'
+        ast_str += comma_separated([ast2txt(element) for element in tree.elts])
+        return ast_str
+
+    if isinstance(tree, ast.While):
+        ast_str += 'while {}:\n'
+        ast_str += ast2txt(tree.test)
+        ast_str += ast2txt(tree.body)
+        ast_str += 'dedent\n'
+        return ast_str
+
+    if isinstance(tree, ast.Compare):
+        first_op = operators[type(tree.ops[0])]
+        ast_str += '{} ' + first_op + ' {}\n'
+        ast_str += ast2txt(tree.left)
+        for i in range(1,len(tree.ops)):
+            next_op = operators[type(tree.ops[i])]
+            ast_str += '{} ' + next_op + ' {}\n'
+            ast_str += ast2txt(tree.comparators[i-1])
+        ast_str += ast2txt(tree.comparators[-1])
+        return ast_str
+
+    if isinstance(tree, list):
+        ast_str += comma_separated([ast2txt(element) for element in tree])
+        return ast_str
+
+    print "Did not know what to do with",type(tree)
     return ast_str + 'NOT IMPLEMENTED\n'

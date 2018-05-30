@@ -45,7 +45,7 @@ for i in range(len(aacids)):
     aacids[i] = aacids[i].strip()
     if aacids[i] not in inputDict:
         value = str(dictCount)
-        value = (3-len(value))*"0"+value
+        value = (3 - len(value)) * "0" + value
         inputDict[aacids[i]] = value
         dictCount += 1
 for item in inputDict:
@@ -63,44 +63,49 @@ global codonLength
 codonLength = 3
 
 
-def getTree(position,container):
-     codon = genome[position:position + codonLength]
-     aacid = translation[codon]
-     position += codonLength
-     newContainer = []
-     if aacid != "{}":
-          for i in range(aacid.count("{}")):
-               value,position = getTree(position,newContainer)
-               newContainer.append(value)
-          aacid = aacid.format(*newContainer)
-     return aacid,position
+def getTree(position, container):
+    codon = genome[position:position + codonLength]
+    aacid = translation[codon]
+    position += codonLength
+    newContainer = []
+    if aacid != "{}":
+        for i in range(aacid.count("{}")):
+            value, position = getTree(position, newContainer)
+            newContainer.append(value)
+        aacid = aacid.format(*newContainer)
+    return aacid, position
+
+
 def translate():
-     output = ""
-     codeList = []
-     position = 0
-     while position < len(genome):
-          value,position = getTree(position,codeList)
-          codeList.append(value)
-     indent = 0
-     for line in codeList:
-          if len(line) == 0:
-              output += "\n"
-          elif line[-1] == ":":
-               output += "\n"+" "*(5*indent)+line
-               indent += 1
-          elif line == "dedent":
-               indent -= 1
-          else:
-               output += "\n"+" "*(5*indent)+line
-     return output
+    output = ""
+    codeList = []
+    position = 0
+    while position < len(genome):
+        value, position = getTree(position, codeList)
+        codeList.append(value)
+    indent = 0
+    for line in codeList:
+        if len(line) == 0:
+            output += "\n"
+        elif line[-1] == ":":
+            output += "\n" + " " * (4 * indent) + line
+            indent += 1
+        elif line == "dedent":
+            indent -= 1
+        else:
+            output += "\n" + " " * (5 * indent) + line
+    return output
+
+
 def makeOffspring():
-     locationID = "000"
-     uniqueID = "aaaaaaaa"
-     offspringName = locationID + "_" + uniqueID + ".py"
-     offspring=open(offspringName,"w")
-     offspring.write("translation = "+str(translation))
-     offspring.write("\n"+"genome = '"+genome+"'")
-     offspring.write(translate())
-     offspring.close()
+    locationID = "000"
+    uniqueID = "aaaaaaaa"
+    offspringName = locationID + "_" + uniqueID + ".py"
+    offspring = open(offspringName, "w")
+    offspring.write("translation = " + str(translation))
+    offspring.write("\n" + "genome = '" + genome + "'")
+    offspring.write(translate())
+    offspring.close()
+
 
 makeOffspring()
