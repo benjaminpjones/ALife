@@ -148,7 +148,11 @@ def ast2txt(tree, ast_str='', parent_node = None):
     # strings
     if isinstance(tree, ast.Str):
         ast_str += '"{}"\n'
-        ast_str += tree.s.replace('\\','\\\\').replace('"','\\"') + '\n'
+        # avoid quotes errors
+        escaped_string = tree.s.replace('\\','\\\\').replace('"','\\"')
+        # must survive a call to str.format
+        escaped_string = escaped_string.replace('{','{{').replace('}','}}')
+        ast_str += escaped_string + '\n'
         return ast_str
 
     # import statements
@@ -170,7 +174,7 @@ def ast2txt(tree, ast_str='', parent_node = None):
     # global variables
     if isinstance(tree, ast.Global):
         ast_str += 'global {}\n'
-        ast_str += comma_separated([ast2txt(name) for name in tree.names]) + '\n'
+        ast_str += comma_separated([ast2txt(name) for name in tree.names])
         return ast_str
 
     # subscript operators (to get an element from a List)
@@ -223,9 +227,9 @@ def ast2txt(tree, ast_str='', parent_node = None):
 
     # keywords
     if isinstance(tree, ast.keyword):
-        ast_str += '{} = {}\n'
-        ast_str += tree.arg + '\n'
-        ast_str += ast2txt(tree.value) + '\n'
+        ast_str += '{}={}\n'
+        ast_str += ast2txt(tree.arg)
+        ast_str += ast2txt(tree.value)
         return ast_str
 
     # lists
@@ -240,12 +244,18 @@ def ast2txt(tree, ast_str='', parent_node = None):
         ast_str += comma_separated([ast2txt(element) for element in tree.elts])
         return ast_str
 
-    # while statements
+    # while loops
     if isinstance(tree, ast.While):
         ast_str += 'while {}:\n'
         ast_str += ast2txt(tree.test)
-        ast_str += ast2txt(tree.body)
+        for node in tree.body:
+            ast_str += ast2txt(node)
         ast_str += 'dedent\n'
+        if tree.orelse:
+            ast_str += 'else:\n'
+            for node in tree.orelse:
+                ast_str += ast2txt(node)
+            ast_str += 'dedent\n'
         return ast_str
 
     # comparisons
