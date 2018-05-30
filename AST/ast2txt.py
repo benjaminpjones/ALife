@@ -148,7 +148,11 @@ def ast2txt(tree, ast_str='', parent_node = None):
     # strings
     if isinstance(tree, ast.Str):
         ast_str += '"{}"\n'
-        ast_str += tree.s.replace('\\','\\\\').replace('"','\\"') + '\n'
+        # avoid quotes errors
+        escaped_string = tree.s.replace('\\','\\\\').replace('"','\\"')
+        # must survive a call to str.format
+        escaped_string = escaped_string.replace('{','{{').replace('}','}}')
+        ast_str += escaped_string + '\n'
         return ast_str
 
     # import statements
