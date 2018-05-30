@@ -37,7 +37,8 @@ def getTree(idx, split_txt):
     aacid = split_txt[idx]
     idx += 1
     subtrees = []
-    for i in xrange(aacid.count('{}')):
+    num_subtrees = aacid.replace('{{', "").replace('}}', "").count('{}')
+    for i in xrange(num_subtrees):
         try:
             subtree, idx = getTree(idx, split_txt)
         except:
@@ -72,26 +73,23 @@ if __name__ == '__main__':
     source = f.read()
     tree = ast.parse(source)
 
-    txtTree = ast2txt(tree)
-    print txtTree
+    txt_tree = ast2txt(tree)
+    print(txt_tree)
 
     # round-trip source
-    rt_source = txt2src(txtTree) 
-    print rt_source
+    rt_source = txt2src(txt_tree) 
 
     # Finally, run ast again.
     rt_tree = ast.parse(rt_source)
-
-    print pdumpAST(tree)
-    print pdumpAST(rt_tree)
 
     # diff
     num_lines = 0
     before = pdumpAST(tree).split('\n')
     after = pdumpAST(rt_tree).split('\n')
-    for line in unified_diff(before, after):
+    for line in unified_diff(before, after, 'before', 'after'):
         num_lines += 1
         print line
 
     if not num_lines:
+        print pdumpAST(rt_tree)
         print "TEST PASSED: ASTs are identical!"
