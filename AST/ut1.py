@@ -24,7 +24,7 @@ def pdumpAST(tree):
             did_return = True
         elif char == '[' or char == ']':
             pass
-        elif char == ' ':
+        elif char == ' ' and did_return:
             pass
         elif char == '=':
             dump_list.append(': ')
@@ -38,7 +38,10 @@ def getTree(idx, split_txt):
     idx += 1
     subtrees = []
     for i in xrange(aacid.count('{}')):
-        subtree, idx = getTree(idx, split_txt)
+        try:
+            subtree, idx = getTree(idx, split_txt)
+        except:
+            subtree, idx = "ERRORED subtree", idx + 1
         subtrees.append(subtree)
     aacid = aacid.format(*subtrees)
     return aacid, idx
@@ -70,6 +73,7 @@ if __name__ == '__main__':
     tree = ast.parse(source)
 
     txtTree = ast2txt(tree)
+    print txtTree
 
     # round-trip source
     rt_source = txt2src(txtTree) 
@@ -78,12 +82,14 @@ if __name__ == '__main__':
     # Finally, run ast again.
     rt_tree = ast.parse(rt_source)
 
-    print pdumpAST(rt_tree)
     print pdumpAST(tree)
+    print pdumpAST(rt_tree)
 
-    # dif
+    # diff
     num_lines = 0
-    for line in unified_diff(pdumpAST(rt_tree), pdumpAST(rt_tree)):
+    before = pdumpAST(tree).split('\n')
+    after = pdumpAST(rt_tree).split('\n')
+    for line in unified_diff(before, after):
         num_lines += 1
         print line
 
