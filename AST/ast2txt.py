@@ -17,8 +17,8 @@ operators = { ast.Add: '+', ast.Sub: '-', ast.Mult: '*', ast.Div: '/',
               ast.GtE: '>=', ast.Eq: '==', ast.NotEq: '!=', ast.Or: ' or ',
               ast.And: ' and ', ast.In: ' in '}
 
-# Appends tree's string representation to ast+string
-def ast2txt(tree, ast_str='', parent_node = None):
+# Appends tree's string representation to ast_str
+def ast2txt(tree, ast_str=''):
     # module object (exists for every program)
     if isinstance(tree, ast.Module):
         for node in tree.body:
@@ -94,9 +94,9 @@ def ast2txt(tree, ast_str='', parent_node = None):
         args_list = [ast2txt(arg) for arg in tree.args]
         args_list += [ast2txt(arg) for arg in tree.keywords]
         if tree.starargs:
-            args_list += '*{}\n' + ast2txt(tree.starargs)
+            args_list.append('*{}\n' + ast2txt(tree.starargs))
         if tree.kwargs:
-            args_list += '**{}\n' + ast2txt(tree.kwargs)
+            args_list.append('**{}\n' + ast2txt(tree.kwargs))
         ast_str += comma_separated(args_list)
         return ast_str
 
@@ -150,6 +150,8 @@ def ast2txt(tree, ast_str='', parent_node = None):
         ast_str += '"{}"\n'
         # avoid quotes errors
         escaped_string = tree.s.replace('\\','\\\\').replace('"','\\"')
+        # avoid newline errors
+        escaped_string = escaped_string.replace('\n', '\\n')
         # must survive a call to str.format
         escaped_string = escaped_string.replace('{','{{').replace('}','}}')
         ast_str += escaped_string + '\n'
@@ -273,7 +275,7 @@ def ast2txt(tree, ast_str='', parent_node = None):
     # python lists
     if isinstance(tree, list):
         print "Warning: ast2txt was called on a list (not an ast object)."
-        ast_str += "Error: ast2txt should not process lists." 
+        ast_str += "Error: ast2txt should not process lists.\n" 
         return ast_str
 
     # if statements
@@ -283,9 +285,10 @@ def ast2txt(tree, ast_str='', parent_node = None):
         for node in tree.body:
             ast_str += ast2txt(node)
         ast_str += 'dedent\n'
-        for node in tree.orelse:
+        if tree.orelse:
             ast_str += 'else:\n'
-            ast_str += ast2txt(node)
+            for node in tree.orelse:
+                ast_str += ast2txt(node)
             ast_str += 'dedent\n'
         return ast_str
 
@@ -296,35 +299,37 @@ def ast2txt(tree, ast_str='', parent_node = None):
             ast_str += ast2txt(val)
         return ast_str
 
-    # try/except clause
+    # try/except statements
     if isinstance(tree, ast.TryExcept):
-        # body handlers orelse
         ast_str += 'try:\n'
-        ast_str += ast2txt(tree.body)
+        for node in tree.body:
+            ast_str += ast2txt(node)
         ast_str += 'dedent\n'
         for handler in tree.handlers:
             ast_str += ast2txt(handler)
         if tree.orelse:
             ast_str += 'else:\n'
-            ast_str += ast2txt(tree.orelse)
+            for node in tree.orelse:
+                ast_str += ast2txt(node)
             ast_str += 'dedent\n'
         return ast_str
 
     # except clause
     if isinstance(tree, ast.ExceptHandler):
-        if tree.type:
-            ast_str += 'except {}:\n'
-            if tree.name:
-                ast_str += '{} as {}\n'
-                ast_str += ast2txt(tree.type)
-                ast_str += ast2txt(tree.name)
-            else:
-                ast_str += ast2txt(tree.type)
+        ast_str += 'except {}:\n'
+        if tree.name:
+            ast_str += '{} as {}\n'
+            ast_str += ast2txt(tree.type)
+            ast_str += ast2txt(tree.name)
         else:
-            ast_str += 'except:\n'
-        ast_str += ast2txt(tree.body)
+            ast_str += ast2txt(tree.type)
+        for node in tree.body:
+            ast_str += ast2txt(node)
         ast_str += 'dedent\n'
         return ast_str
+
+    if isinstance(tree, type(None)):
+        return ast_str + '\n'
 
     print "Did not know what to do with",type(tree)
     return ast_str + 'NOT IMPLEMENTED\n'

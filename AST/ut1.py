@@ -39,12 +39,15 @@ def getTree(idx, split_txt):
     subtrees = []
     num_subtrees = aacid.replace('{{', "").replace('}}', "").count('{}')
     for i in xrange(num_subtrees):
-        try:
-            subtree, idx = getTree(idx, split_txt)
-        except:
-            subtree, idx = "ERRORED subtree", idx + 1
+        subtree, idx = getTree(idx, split_txt)
         subtrees.append(subtree)
-    aacid = aacid.format(*subtrees)
+    try:
+        aacid = aacid.format(*subtrees)
+    except Exception as error:
+        print error
+        print "aacid:", aacid, "-- subtrees:", subtrees
+        aacid = "# txt2src could not parse here.\n"
+        
     return aacid, idx
 
 def txt2src(txt_str):
@@ -71,6 +74,7 @@ def txt2src(txt_str):
 if __name__ == '__main__':
     f, filename = getValidFileFromUser()
     source = f.read()
+    f.close()
     tree = ast.parse(source)
 
     txt_tree = ast2txt(tree)
@@ -80,7 +84,24 @@ if __name__ == '__main__':
     rt_source = txt2src(txt_tree) 
 
     # Finally, run ast again.
-    rt_tree = ast.parse(rt_source)
+    rt_tree = None
+    try:
+        rt_tree = ast.parse(rt_source)
+    except Exception as error:
+        print "Re-translated source had syntax errors:"
+        print "    ", error
+        failed_ast_name = filename[:-3] + '(failed).txt'
+        f = open(failed_ast_name, 'w+')
+        f.write(txt_tree)
+        f.close()
+        failed_src_name = filename[:-3] + '(failed).py'
+        f = open(failed_src_name, 'w+')
+        f.write(rt_source)
+        f.close()
+        print "Translations written to file:"
+        print "    ", failed_src_name
+        print "    ", failed_ast_name
+        quit()
 
     # diff
     num_lines = 0
