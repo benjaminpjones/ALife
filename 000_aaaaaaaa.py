@@ -3,147 +3,147 @@ genome = '0000010020010030010040010050060070080090100110120110130110140110150110
 import sys,random,os,json,subprocess
 #################################getTraits
 def getTraits():
-     global metabolism
-     global codonLength
-     global selfName
-     global world
-     global sightDistance
-     metabolism = .5
-     codonLength = 3
-     selfName = sys.argv[0].split("\\")[-1].split("/")[-1]
-     world = os.getcwd()
-     sightDistance = 300
+    global metabolism
+    global codonLength
+    global selfName
+    global world
+    global sightDistance
+    metabolism = .5
+    codonLength = 3
+    selfName = sys.argv[0].split("\\")[-1].split("/")[-1]
+    world = os.getcwd()
+    sightDistance = 300
 #################################GetTree
 def getTree(position,container):
-     codon = genome[position:position + codonLength]
-     aacid = translation[codon]
-     position += codonLength
-     newContainer = []
+    codon = genome[position:position + codonLength]
+    aacid = translation[codon]
+    position += codonLength
+    newContainer = []
     if aacid != '{}':
         for i in range(aacid.count('{}')):
-               value,position = getTree(position,newContainer)
-               newContainer.append(value)
-          aacid = aacid.format(*newContainer)
-     return aacid,position
+            value,position = getTree(position,newContainer)
+            newContainer.append(value)
+        aacid = aacid.format(*newContainer)
+    return aacid,position
 #################################Translate
 def translate():
-     output = ''
-     codeList = []
-     position = 0
+    output = ''
+    codeList = []
+    position = 0
     while position < len(genome):
-          value,position = getTree(position,codeList)
-          codeList.append(value)
-     indent = 0
+        value,position = getTree(position,codeList)
+        codeList.append(value)
+    indent = 0
     for line in codeList:
         if line[-1] == ':':
-               output += '\n' + ' '*(5*indent)+line
-               indent += 1
+            output += '\n' + ' '*(5*indent)+line
+            indent += 1
         elif line == 'dedent':
-               indent -= 1
+            indent -= 1
         else:
-               output += '\n' + ' '*(5*indent)+line
-     return output
+            output += '\n' + ' '*(5*indent)+line
+    return output
 #################################getRandomString
 def getRandomString(length,kind):
     if kind == 'letters':
-          chars = 'abcdefghijklmnopqrstuvwxyz'
+        chars = 'abcdefghijklmnopqrstuvwxyz'
     elif kind == 'numbers':
-          chars = '0123456789'
+        chars = '0123456789'
     else:
-          chars = '0123456789abcdefghijklmnopqrstuvwxyz'
-     string = ''
+        chars = '0123456789abcdefghijklmnopqrstuvwxyz'
+    string = ''
     for i in range(length):
-          string += random.choice(chars)
-     return string
+        string += random.choice(chars)
+    return string
 #################################makeOffspring
 def makeOffspring():
-     locationID = getRandomString(3,'numbers')
-     uniqueID = getRandomString(8,'alphanumeric')
-     offspringName = locationID + '_' + uniqueID + '.py'
-     offspring = open(offspringName,'w')
-     offspring.write('translation = ' + str(translation))
-     offspring.write('\n' + 'genome = "' + genome + '"')
-     offspring.write(translate())
-     offspring.close()
+    locationID = getRandomString(3,'numbers')
+    uniqueID = getRandomString(8,'alphanumeric')
+    offspringName = locationID + '_' + uniqueID + '.py'
+    offspring = open(offspringName,'w')
+    offspring.write('translation = ' + str(translation))
+    offspring.write('\n' + 'genome = "' + genome + '"')
+    offspring.write(translate())
+    offspring.close()
 #################################splitName
 def splitName(name):
-     return name.split("_")
+    return name.split("_")
 #################################intToString
 def intToString(num,length):
-     num = str(num)
+    num = str(num)
     for i in range(length - len(num)):
-          num = "0" + num
-     return num
+        num = "0" + num
+    return num
 #################################getNewPosition
 def getNewPosition(position,direction):
-     return (int(position) + direction) % 1000
+    return (int(position) + direction) % 1000
 #################################move
 def move(distance):
-     global selfName
-     position,uniqueID = selfName.split("_")
+    global selfName
+    position,uniqueID = selfName.split("_")
     if random.random < .5:
-          direction = 1
+        direction = 1
     else:
-          direction = -1
+        direction = -1
     for i in range(distance):
-          position = intToString(getNewPosition(position,direction),3)
-          newName = position + "_" + uniqueID
-          os.rename(selfName,newName)
-          selfName = newName
+        position = intToString(getNewPosition(position,direction),3)
+        newName = position + "_" + uniqueID
+        os.rename(selfName,newName)
+        selfName = newName
 #################################tryToMove
 def tryToMove():
     if random.random() < metabolism:
-          distance = int(metabolism*random.uniform(1,100))
-          move(distance)
+        distance = int(metabolism*random.uniform(1,100))
+        move(distance)
 #################################initiateInteraction
 def initiateInteraction(organisms):
-     otherName = random.choice(organisms)
-     interact(otherName)
+    otherName = random.choice(organisms)
+    interact(otherName)
 #################################interact
 def interact(otherName):
-     message = getMessage()
-     otherOrganism = subprocess.Popen(["python",otherName],bufsize=1,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE,universal_newlines=True)
-     fullResponse = otherOrganism.communicate(message)
-     parsedResponse = fullResponse[0]
+    message = getMessage()
+    otherOrganism = subprocess.Popen(["python",otherName],bufsize=1,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE,universal_newlines=True)
+    fullResponse = otherOrganism.communicate(message)
+    parsedResponse = fullResponse[0]
 #################################getMessage
 def getMessage():
-     message = dict()
-     message["acting_organism"] = selfName
-     return json.dumps(message)
+    message = dict()
+    message["acting_organism"] = selfName
+    return json.dumps(message)
 #################################getAllOrganisms
 def getAllOrganisms(world):
-     organisms = []
+    organisms = []
     for organism in os.listdir(world):
         if organism[-3:] == ".py":
-               organisms.append(organism)
-     return organisms
+            organisms.append(organism)
+    return organisms
 #################################findNearbyOrganisms
 def findNearbyOrganisms(organisms):
-     location = int(splitName(selfName)[0])
-     nearby = []
+    location = int(splitName(selfName)[0])
+    nearby = []
     for organism in organisms:
         if organism != selfName:
-               organismLocation = int(splitName(organism)[0])
+            organismLocation = int(splitName(organism)[0])
             if abs(organismLocation - location) < sightDistance or abs(organismLocation - location) > (1000 - sightDistance):
-                    nearby.append(organism)
-     return nearby
+                nearby.append(organism)
+    return nearby
 #################################main
 getTraits()
 startConditions = raw_input()
 try:
-     startConditions = json.loads(startConditions)
+    startConditions = json.loads(startConditions)
 except:
-     startConditions = dict()
+    startConditions = dict()
 if type(startConditions) != dict:
-     startConditions = dict()
+    startConditions = dict()
 if startConditions.get("acting_organism") == None:
-     tryToMove()
-     organisms = getAllOrganisms(world)
-     organisms.remove("genomeGenerator.py")
-     nearby = findNearbyOrganisms(organisms)
+    tryToMove()
+    organisms = getAllOrganisms(world)
+    organisms.remove("genomeGenerator.py")
+    nearby = findNearbyOrganisms(organisms)
     if nearby:
-          initiateInteraction(nearby)
-     makeOffspring()
+        initiateInteraction(nearby)
+    makeOffspring()
 else:
-     tryToMove()
-     print getMessage()
+    tryToMove()
+    print getMessage()

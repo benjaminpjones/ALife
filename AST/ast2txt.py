@@ -273,7 +273,7 @@ def ast2txt(tree, ast_str='', parent_node = None):
     # python lists
     if isinstance(tree, list):
         print "Warning: ast2txt was called on a list (not an ast object)."
-        ast_str += comma_separated([ast2txt(element) for element in tree])
+        ast_str += "Error: ast2txt should not process lists." 
         return ast_str
 
     # if statements

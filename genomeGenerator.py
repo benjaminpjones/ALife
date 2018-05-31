@@ -93,7 +93,7 @@ def translate():
         elif line == "dedent":
             indent -= 1
         else:
-            output += "\n" + " " * (5 * indent) + line
+            output += "\n" + " " * (4 * indent) + line
     return output
 
 
