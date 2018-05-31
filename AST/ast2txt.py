@@ -270,8 +270,9 @@ def ast2txt(tree, ast_str='', parent_node = None):
         ast_str += ast2txt(tree.comparators[-1])
         return ast_str
 
-    # lists
+    # python lists
     if isinstance(tree, list):
+        print "Warning: ast2txt was called on a list (not an ast object)."
         ast_str += comma_separated([ast2txt(element) for element in tree])
         return ast_str
 
